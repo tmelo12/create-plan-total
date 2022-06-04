@@ -42,6 +42,11 @@ for (linha) in sasi_cursor:
     #concatena
     df_dados_da_base = pd.concat ([df_dados_da_base , novaLinha] )
 
+#limpando os dados
+df_dados_da_base['cpf'] = df_dados_da_base['cpf'].str.replace('-','')
+df_dados_da_base['cpf'] = df_dados_da_base['cpf'].str.replace('.','')
+df_dados_da_base['cpf'] = df_dados_da_base['cpf'].str.replace(' ','')
+
 #salvar em excel ordenando por id
 df_dados_da_base.sort_values(by=['id']).to_excel('/home/thiago/Documentos/notebooks/planilha_geral/dados_cartao_total.xlsx',index=False)
 
