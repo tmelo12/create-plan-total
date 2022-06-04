@@ -1,13 +1,11 @@
 import mysql.connector
 import pandas as pd
-import time
-import requests
 import json
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 import json
 
 #lendo as configurações de conexão do arquivo json
-with open('config.json') as config_file:
+with open('/home/thiago/Documentos/notebooks/create-plan-total/diarias/config.json') as config_file:
     dados_conexao = json.load(config_file)
 
 #conexão ao banco salva na variavel dbsasi
@@ -47,7 +45,7 @@ while(data_de_operacao <= hoje):
         df_dados_da_base = pd.concat ([df_dados_da_base , novaLinha] )
         
     #salvar o excel com os dados do banco para o dia buscado
-    df_dados_da_base.sort_values(by=['id']).to_excel('./planilhas_diarias/dados_cartao_dia_'+str(data_de_operacao)+'.xlsx',index=False)
+    df_dados_da_base.sort_values(by=['id']).to_excel('/home/thiago/Documentos/notebooks/planilhas_diarias/dados_cartao_dia_'+str(data_de_operacao)+'.xlsx',index=False)
     
     
     #próximo dia
