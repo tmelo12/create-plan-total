@@ -3,7 +3,7 @@ import pandas as pd
 import time
 import requests
 import json
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import json
 
 #lendo as configurações de conexão do arquivo json
@@ -19,10 +19,37 @@ dbsasi = mysql.connector.connect(
 sasi_cursor = dbsasi.cursor()
 
 #query com a busca que queremos fazer
-query = ("SELECT * FROM user WHERE generatedAt = %s")
+query = ("SELECT * FROM user WHERE generetedAt LIKE CONCAT (%s,'%');")
 
 #criando as datas para a busca
-hire_start = datetime.date(1999, 1, 1)
-hire_end = datetime.date(1999, 12, 31)
+data_de_operacao = date(2022, 5, 13) #inicio da operacao
+hoje = date.today() #data atual
 
-sasi_cursor.execute(query, (hire_start, hire_end))
+
+#loop para buscar os dados do banco de acordo com as datas
+while(data_de_operacao <= hoje):
+    
+    sasi_cursor.execute(query, (data_de_operacao))
+    
+    #processo de criar o dataframe
+    COLUNAS = [
+                'id',
+                'nome',
+                'cpf',
+                'municipio',
+                'cod_cartao',
+                'status_cartao',
+                'data_entrega'
+    ]
+    df_dados_da_base = pd.DataFrame(columns=COLUNAS)
+    
+    for (linha) in sasi_cursor:
+        novaLinha = pd.DataFrame([linha], columns = COLUNAS)
+        df_dados_da_base = pd.concat ([df_dados_da_base , novaLinha] )
+        
+    #salvar o excel com os dados do banco para o dia buscado
+    df_dados_da_base.sort_values(by=['id']).to_excel('dados_cartao_dia'+data_de_operacao+'.xlsx',index=False)
+    
+    
+    #próximo dia
+    data_de_operacao = data_de_operacao + timedelta(days=1)
