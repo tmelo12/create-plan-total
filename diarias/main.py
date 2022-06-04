@@ -9,3 +9,5 @@ import json
 #lendo as configurações de conexão do arquivo json
 with open('config.json') as config_file:
     dados_conexao = json.load(config_file)
+    
+#sakdokoadokaodkkapd
