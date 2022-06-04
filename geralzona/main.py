@@ -1,12 +1,10 @@
 import mysql.connector
 import pandas as pd
-import time
-import requests
 import json
 from datetime import datetime
 
 #lendo as configurações de conexão do arquivo json
-with open('config.json') as config_file:
+with open('/home/thiago/Documentos/notebooks/create-plan-total/geralzona/config.json') as config_file:
     dados_conexao = json.load(config_file)
     
 #conexão ao banco salva na variavel dbsasi
@@ -25,13 +23,13 @@ sasi_cursor.execute(query)
 
 #criando dataframe para receber os dados do banco
 COLUNAS = [
-            'id',
-            'nome',
-            'cpf',
-            'municipio',
-            'cod_cartao',
-            'status_cartao',
-            'data_entrega'
+    'id',
+    'nome',
+    'cpf',
+    'municipio',
+    'cod_cartao',
+    'status_cartao',
+    'data_entrega'
 ]
 
 df_dados_da_base = pd.DataFrame(columns=COLUNAS)
@@ -45,7 +43,7 @@ for (linha) in sasi_cursor:
     df_dados_da_base = pd.concat ([df_dados_da_base , novaLinha] )
 
 #salvar em excel ordenando por id
-df_dados_da_base.sort_values(by=['id']).to_excel('dados_cartao.xlsx',index=False)
+df_dados_da_base.sort_values(by=['id']).to_excel('/home/thiago/Documentos/notebooks/planilha_geral/dados_cartao.xlsx',index=False)
 
 #fechando a conexão
 sasi_cursor.close()
