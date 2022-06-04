@@ -28,8 +28,7 @@ hoje = date.today() #data atual
 
 #loop para buscar os dados do banco de acordo com as datas
 while(data_de_operacao <= hoje):
-    
-    sasi_cursor.execute(query, (data_de_operacao))
+    sasi_cursor.execute(query, (data_de_operacao,))
     
     #processo de criar o dataframe
     COLUNAS = [
@@ -48,8 +47,12 @@ while(data_de_operacao <= hoje):
         df_dados_da_base = pd.concat ([df_dados_da_base , novaLinha] )
         
     #salvar o excel com os dados do banco para o dia buscado
-    df_dados_da_base.sort_values(by=['id']).to_excel('dados_cartao_dia'+data_de_operacao+'.xlsx',index=False)
+    df_dados_da_base.sort_values(by=['id']).to_excel('./planilhas_diarias/dados_cartao_dia_'+str(data_de_operacao)+'.xlsx',index=False)
     
     
     #próximo dia
     data_de_operacao = data_de_operacao + timedelta(days=1)
+    
+#fechando a conexão
+sasi_cursor.close()
+dbsasi.close()
