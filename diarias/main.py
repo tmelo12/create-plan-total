@@ -1,13 +1,11 @@
 import mysql.connector
 import pandas as pd
-import time
-import requests
 import json
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 import json
 
 #lendo as configurações de conexão do arquivo json
-with open('config.json') as config_file:
+with open('/home/thiago/Documentos/notebooks/create-plan-total/diarias/config.json') as config_file:
     dados_conexao = json.load(config_file)
 
 #conexão ao banco salva na variavel dbsasi
@@ -19,7 +17,7 @@ dbsasi = mysql.connector.connect(
 sasi_cursor = dbsasi.cursor()
 
 #query com a busca que queremos fazer
-query = ("SELECT * FROM user WHERE generetedAt LIKE CONCAT (%s,'%');")
+query = ("SELECT * FROM user WHERE generatedAt LIKE CONCAT (%s,'%');")
 
 #criando as datas para a busca
 data_de_operacao = date(2022, 5, 13) #inicio da operacao
@@ -32,22 +30,27 @@ while(data_de_operacao <= hoje):
     
     #processo de criar o dataframe
     COLUNAS = [
-                'id',
-                'nome',
-                'cpf',
-                'municipio',
-                'cod_cartao',
-                'status_cartao',
-                'data_entrega'
+        'id',
+        'nome',
+        'cpf',
+        'municipio',
+        'cod_cartao',
+        'status_cartao',
+        'data_entrega'
     ]
     df_dados_da_base = pd.DataFrame(columns=COLUNAS)
     
     for (linha) in sasi_cursor:
         novaLinha = pd.DataFrame([linha], columns = COLUNAS)
         df_dados_da_base = pd.concat ([df_dados_da_base , novaLinha] )
-        
+    
+    #limpando os dados
+    df_dados_da_base['cpf'] = df_dados_da_base['cpf'].str.replace('-','')
+    df_dados_da_base['cpf'] = df_dados_da_base['cpf'].str.replace('.','')
+    df_dados_da_base['cpf'] = df_dados_da_base['cpf'].str.replace(' ','')
+    
     #salvar o excel com os dados do banco para o dia buscado
-    df_dados_da_base.sort_values(by=['id']).to_excel('./planilhas_diarias/dados_cartao_dia_'+str(data_de_operacao)+'.xlsx',index=False)
+    df_dados_da_base.sort_values(by=['id']).to_excel('/home/thiago/Documentos/notebooks/planilhas_diarias/dados_cartao_dia_'+str(data_de_operacao)+'.xlsx',index=False)
     
     
     #próximo dia
