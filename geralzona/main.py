@@ -43,7 +43,7 @@ for (linha) in sasi_cursor:
     df_dados_da_base = pd.concat ([df_dados_da_base , novaLinha] )
 
 #salvar em excel ordenando por id
-df_dados_da_base.sort_values(by=['id']).to_excel('/home/thiago/Documentos/notebooks/planilha_geral/dados_cartao.xlsx',index=False)
+df_dados_da_base.sort_values(by=['id']).to_excel('/home/thiago/Documentos/notebooks/planilha_geral/dados_cartao_total.xlsx',index=False)
 
 #fechando a conexão
 sasi_cursor.close()
