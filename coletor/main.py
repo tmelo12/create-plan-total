@@ -5,11 +5,11 @@ import requests
 import json
 import xlsxwriter 
 from datetime import date, datetime, timedelta
-nomearquivo = "./planilha_geral/dados_cartao_total.xlsx"
+nomearquivo = "'/home/thiago/Documentos/notebooks/planilha_geral/dados_cartao_total.xlsx"
 hoje = date.today()
 
 #lendo as configuracoes de conexao do arquivo json
-with open('config.json') as config_file:
+with open('/home/thiago/Documentos/notebooks/create-plan-total/coletor/config.json') as config_file:
     dados_conexao = json.load(config_file)
     
 #conexao ao banco salva na variavel dbsasi
@@ -106,8 +106,10 @@ while(0):
     #adicionar a nova linha ao dataframe com os dados que já possuímos
     df_atual = pd.concat([df_atual, novos_registros])
     
+    
+    #ler a planilha diaria
     arquivo_diario_lido = False
-    nome_arquivo_diario = './planilhas_diarias/dados_cartao_dia_'+str(hoje)+'.xlsx'
+    nome_arquivo_diario = '/home/thiago/Documentos/notebooks/planilhas_diarias/dados_cartao_dia_'+str(hoje)+'.xlsx'
 
     while(arquivo_diario_lido == False):
         #verifica se o arquivo foi aberto corretamente
@@ -122,7 +124,7 @@ while(0):
             time.sleep(2)
             
             print("Um novo arquivo para o dia", hoje, "sera criado...\n")
-            nome_arquivo_diario = './planilhas_diarias/dados_cartao_dia_'+str(hoje)+'.xlsx'
+            nome_arquivo_diario = '/home/thiago/Documentos/notebooks/planilhas_diarias/dados_cartao_dia_'+str(hoje)+'.xlsx'
             workbook = xlsxwriter.Workbook(nome_arquivo_diario)
             worksheet = workbook.add_worksheet()
             workbook.close()
@@ -143,8 +145,12 @@ while(0):
     #concatenar os filtrados com a planilha de hoje
     df_diario = pd.concat([df_diario, novos_registros])
     
+    #removendo pontos e tracos do campo cpf
+    df_diario['cpf'] = df_diario['cpf'].str.replace('-','')
+    df_diario['cpf'] = df_diario['cpf'].str.replace('.','')
+    df_diario['cpf'] = df_diario['cpf'].str.replace(' ','')
+    
     #salvar as alteracoes na planilha diaria
-
     arquivo_diario_salvo = False
     while(arquivo_diario_salvo == False):
         try:
@@ -160,15 +166,20 @@ while(0):
         else:
             print("Arquivo excel diario foi salvo :D\n")
             arquivo_diario_salvo = True
-            
+    
+    
+    #removendo pontos e tracos do campo cpf
+    df_atual['cpf'] = df_atual['cpf'].str.replace('-','')
+    df_atual['cpf'] = df_atual['cpf'].str.replace('.','')
+    df_atual['cpf'] = df_atual['cpf'].str.replace(' ','')
+    
     #salvar a planilha geralzona com os dados concatenados
-
     #substituir o arquivo excel geral por um com os novos dados
     arquivo_geral_salvo = False
     while(arquivo_geral_salvo == False):
         try:
             #salvando o dataframe gigante em excel
-            df_atual.sort_values(by=['id']).to_excel('./planilha_geral/dados_cartao_total.xlsx',index=False)
+            df_atual.sort_values(by=['id']).to_excel('/home/thiago/Documentos/notebooks/planilha_geral/dados_cartao_total.xlsx',index=False)
 
         except:
             print("Houve um erro no momento de salvar o excel total (¬¬) \n")
@@ -188,10 +199,14 @@ while(0):
         
         #cria um novo arquivo para o novo dia
         print("Um novo arquivo para o dia", hoje, "sera criado...\n")
-        nome_arquivo_diario = './planilhas_diarias/dados_cartao_dia_'+str(hoje)+'.xlsx'
+        nome_arquivo_diario = '/home/thiago/Documentos/notebooks/planilhas_diarias/dados_cartao_dia_'+str(hoje)+'.xlsx'
         workbook = xlsxwriter.Workbook(nome_arquivo_diario)
         worksheet = workbook.add_worksheet()
         workbook.close()
         time.sleep(2)
         print("Arquivo diario criado :D \n")
-    
+
+
+#fechando a conexão
+sasi_cursor.close()
+dbsasi.close()
