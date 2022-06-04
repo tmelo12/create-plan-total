@@ -5,24 +5,35 @@ import requests
 import json
 import xlsxwriter 
 from datetime import date, datetime, timedelta
-nomearquivo = "'/home/thiago/Documentos/notebooks/planilha_geral/dados_cartao_total.xlsx"
+nomearquivo = "/home/thiago/Documentos/notebooks/planilha_geral/dados_cartao_total.xlsx"
 hoje = date.today()
 
-#lendo as configuracoes de conexao do arquivo json
-with open('/home/thiago/Documentos/notebooks/create-plan-total/coletor/config.json') as config_file:
-    dados_conexao = json.load(config_file)
+print("Vamo comecar essa parada agr...")
+time.sleep(5)
+while(1):
+    #abrindo conexao com o banco
+    conexao_banco = False
+    while(conexao_banco == False):
+        try:   
+            #lendo as configuracoes de conexao do arquivo json
+            with open('/home/thiago/Documentos/notebooks/create-plan-total/coletor/config.json') as config_file:
+                dados_conexao = json.load(config_file)
+                
+            #conexao ao banco salva na variavel dbsasi
+            dbsasi = mysql.connector.connect(
+                **dados_conexao
+            )
+
+            #cursor apontando para o banco
+            sasi_cursor = dbsasi.cursor()
+        except:
+            print("Erro ao conectar no banco de dados (¬¬) \n")
+        else:
+            conexao_banco = True
+            print("Conexao com o banco de dados realizada com sucesso \n")
     
-#conexao ao banco salva na variavel dbsasi
-dbsasi = mysql.connector.connect(
-   **dados_conexao
-)
-
-#cursor apontando para o banco
-sasi_cursor = dbsasi.cursor()
-
-while(0):
+    time.sleep(5)
     #ler o excel geral
-
     arquivo_lido = False
     while(arquivo_lido == False):
         #verifica se o arquivo foi aberto corretamente
@@ -53,6 +64,7 @@ while(0):
     query = ("SELECT * FROM user")
     #buscar no BD tudo
 
+    time.sleep(5)
     requisicao_feita = False
     while(requisicao_feita == False):
         #previnir erros no momento de realizar a requisicao
@@ -110,7 +122,7 @@ while(0):
     #ler a planilha diaria
     arquivo_diario_lido = False
     nome_arquivo_diario = '/home/thiago/Documentos/notebooks/planilhas_diarias/dados_cartao_dia_'+str(hoje)+'.xlsx'
-
+    time.sleep(5)
     while(arquivo_diario_lido == False):
         #verifica se o arquivo foi aberto corretamente
         try:
@@ -146,10 +158,11 @@ while(0):
     df_diario = pd.concat([df_diario, novos_registros])
     
     #removendo pontos e tracos do campo cpf
-    df_diario['cpf'] = df_diario['cpf'].str.replace('-','')
-    df_diario['cpf'] = df_diario['cpf'].str.replace('.','')
-    df_diario['cpf'] = df_diario['cpf'].str.replace(' ','')
+    df_diario['cpf'] = df_diario['cpf'].astype(str).str.replace('-','')
+    df_diario['cpf'] = df_diario['cpf'].astype(str).str.replace('.','')
+    df_diario['cpf'] = df_diario['cpf'].astype(str).str.replace(' ','')
     
+    time.sleep(5)
     #salvar as alteracoes na planilha diaria
     arquivo_diario_salvo = False
     while(arquivo_diario_salvo == False):
@@ -169,10 +182,11 @@ while(0):
     
     
     #removendo pontos e tracos do campo cpf
-    df_atual['cpf'] = df_atual['cpf'].str.replace('-','')
-    df_atual['cpf'] = df_atual['cpf'].str.replace('.','')
-    df_atual['cpf'] = df_atual['cpf'].str.replace(' ','')
+    df_atual['cpf'] = df_atual['cpf'].astype(str).str.replace('-','')
+    df_atual['cpf'] = df_atual['cpf'].astype(str).str.replace('.','')
+    df_atual['cpf'] = df_atual['cpf'].astype(str).str.replace(' ','')
     
+    time.sleep(5)
     #salvar a planilha geralzona com os dados concatenados
     #substituir o arquivo excel geral por um com os novos dados
     arquivo_geral_salvo = False
@@ -191,6 +205,7 @@ while(0):
             print("Arquivo excel total foi salvo :D\n")
             arquivo_geral_salvo = True
             
+    time.sleep(5)
     #verifica se o dia mudou
     if(date.today() > hoje):
         #mudando a data de hoje
@@ -206,7 +221,26 @@ while(0):
         time.sleep(2)
         print("Arquivo diario criado :D \n")
 
+    time.sleep(5)
+    #fechando a conexão com o banco
+    banco_fechado = False
+    while(banco_fechado == False): 
+        try:
+            sasi_cursor.close()
+            dbsasi.close()
+        except:
+            print("Houve um erro no momento de fechar a conexao com o banco (¬¬) \n")
+            time.sleep(2)
+            print("Aguardando 2 minutos para tentar novamente...\n")
+            time.sleep(120)
+        else:
+            print("Conexao com o banco encerrada :D\n")
+            banco_fechado = True
 
-#fechando a conexão
-sasi_cursor.close()
-dbsasi.close()
+    #esperando 5 minutos pra fazer novamente
+    print("Aguardando intervalo de tempo para realizar novamente o processo :D \n")
+    time.sleep(60)
+    print("Iniciando o processo em: ", time.strftime("%H:%M:%S"), "\n");
+    time.sleep(2)
+
+    

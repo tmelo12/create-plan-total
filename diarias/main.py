@@ -17,7 +17,7 @@ dbsasi = mysql.connector.connect(
 sasi_cursor = dbsasi.cursor()
 
 #query com a busca que queremos fazer
-query = ("SELECT * FROM user WHERE generatedAt LIKE CONCAT (%s,'%');")
+query = ("SELECT * FROM user WHERE generetedAt LIKE CONCAT (%s,'%');")
 
 #criando as datas para a busca
 data_de_operacao = date(2022, 5, 13) #inicio da operacao
