@@ -1,5 +1,6 @@
 # Repositório com script para criação das planilhas
 
+## Obs: Todos os arquivos de planilha devem ser utilizados no formato xlsx
 
 ## Coletor - Script que ficará coletando diariamente
 
