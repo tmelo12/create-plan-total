@@ -3,7 +3,7 @@ import pandas as pd
 import time
 import requests
 import json
-from datetime import datetime
+from datetime import date, datetime
 import json
 
 #lendo as configurações de conexão do arquivo json
@@ -17,3 +17,12 @@ dbsasi = mysql.connector.connect(
 
 #cursor apontando para o banco
 sasi_cursor = dbsasi.cursor()
+
+#query com a busca que queremos fazer
+query = ("SELECT * FROM user WHERE generatedAt = %s")
+
+#criando as datas para a busca
+hire_start = datetime.date(1999, 1, 1)
+hire_end = datetime.date(1999, 12, 31)
+
+sasi_cursor.execute(query, (hire_start, hire_end))
