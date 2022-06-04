@@ -30,13 +30,13 @@ while(data_de_operacao <= hoje):
     
     #processo de criar o dataframe
     COLUNAS = [
-                'id',
-                'nome',
-                'cpf',
-                'municipio',
-                'cod_cartao',
-                'status_cartao',
-                'data_entrega'
+        'id',
+        'nome',
+        'cpf',
+        'municipio',
+        'cod_cartao',
+        'status_cartao',
+        'data_entrega'
     ]
     df_dados_da_base = pd.DataFrame(columns=COLUNAS)
     
