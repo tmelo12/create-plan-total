@@ -17,7 +17,7 @@ dbsasi = mysql.connector.connect(
 sasi_cursor = dbsasi.cursor()
 
 #query com a busca que queremos fazer
-query = ("SELECT * FROM user WHERE generetedAt LIKE CONCAT (%s,'%');")
+query = ("SELECT * FROM custom_110760000100.vw_cartao_associado WHERE generetedAt LIKE CONCAT (%s,'%');")
 
 #criando as datas para a busca
 data_de_operacao = date(2022, 5, 13) #inicio da operacao
@@ -62,7 +62,8 @@ while(data_de_operacao <= hoje):
         'generatedAt',
         'nome_cadastrador',
         'telefone_cadastrador',
-        'email_cadastrador'
+        'email_cadastrador',
+        'calha'
     ]
     df_dados_da_base = pd.DataFrame(columns=COLUNAS)
     
@@ -81,7 +82,7 @@ while(data_de_operacao <= hoje):
     df_dados_da_base['cpf'] = df_dados_da_base['cpf'].str.replace(' ','')
     
     #salvar o excel com os dados do banco para o dia buscado
-    df_dados_da_base.sort_values(by=['id']).to_excel('/home/thiago/Documentos/notebooks/planilhas_diarias/dados_cartao_dia_'+str(data_de_operacao)+'.xlsx',index=False)
+    df_dados_da_base.sort_values(by=['id_sasi']).to_excel('/home/thiago/Documentos/notebooks/planilhas_diarias/dados_cartao_dia_'+str(data_de_operacao)+'.xlsx',index=False)
     
     
     #próximo dia
