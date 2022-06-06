@@ -3,7 +3,7 @@ import pandas as pd
 import json
 from datetime import date, timedelta
 import json
-
+from calha import nomeCalha
 #lendo as configurações de conexão do arquivo json
 with open('/home/thiago/Documentos/notebooks/create-plan-total/diarias/config.json') as config_file:
     dados_conexao = json.load(config_file)
@@ -17,7 +17,7 @@ dbsasi = mysql.connector.connect(
 sasi_cursor = dbsasi.cursor()
 
 #query com a busca que queremos fazer
-query = ("SELECT * FROM user WHERE generetedAt LIKE CONCAT (%s,'%');")
+query = ("SELECT * FROM custom_110760000100.vw_cartao_associado WHERE generetedAt LIKE CONCAT (%s,'%');")
 
 #criando as datas para a busca
 data_de_operacao = date(2022, 5, 13) #inicio da operacao
@@ -30,17 +30,49 @@ while(data_de_operacao <= hoje):
     
     #processo de criar o dataframe
     COLUNAS = [
-        'id',
-        'nome',
-        'cpf',
+        'id_sasi',
         'municipio',
-        'cod_cartao',
-        'status_cartao',
-        'data_entrega'
+        'card',
+        'status_valecard',
+        'cpf',
+        'rg',
+        'nome',
+        'data_de_nascimento',
+        'cd_cartao',
+        'renda_mensal',
+        'qual_situacao',
+        'numero',
+        'tipo_endereco',
+        'servido_publico',
+        'trabalhador_informal',
+        'classificacao_moradia',
+        'confirmar_anexo_cartao',
+        'count_anexos',
+        'foto_rg0',
+        'foto_rg1',
+        'foto_rg2',
+        'foto_rg3',
+        'foto_cd_cartao0',
+        'foto_cd_cartao1',
+        'foto_cd_cartao2',
+        'foto_cd_cartao3',
+        'rg_cpf_anexo',
+        'rg_cpf_anexo1',
+        'rg_cpf_anexo2',
+        'generatedAt',
+        'nome_cadastrador',
+        'telefone_cadastrador',
+        'email_cadastrador',
+        'calha'
     ]
     df_dados_da_base = pd.DataFrame(columns=COLUNAS)
     
     for (linha) in sasi_cursor:
+        #criando a coluna com nome da calha
+        lista=list(linha)
+        lista.append(nomeCalha(linha[1]))
+        linha=tuple(lista)
+        
         novaLinha = pd.DataFrame([linha], columns = COLUNAS)
         df_dados_da_base = pd.concat ([df_dados_da_base , novaLinha] )
     
@@ -50,7 +82,7 @@ while(data_de_operacao <= hoje):
     df_dados_da_base['cpf'] = df_dados_da_base['cpf'].str.replace(' ','')
     
     #salvar o excel com os dados do banco para o dia buscado
-    df_dados_da_base.sort_values(by=['id']).to_excel('/home/thiago/Documentos/notebooks/planilhas_diarias/dados_cartao_dia_'+str(data_de_operacao)+'.xlsx',index=False)
+    df_dados_da_base.sort_values(by=['id_sasi']).to_excel('/home/thiago/Documentos/notebooks/planilhas_diarias/dados_cartao_dia_'+str(data_de_operacao)+'.xlsx',index=False)
     
     
     #próximo dia

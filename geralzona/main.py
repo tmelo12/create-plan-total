@@ -17,7 +17,7 @@ dbsasi = mysql.connector.connect(
 sasi_cursor = dbsasi.cursor()
 
 #query com a busca que queremos fazer
-query = ("SELECT * FROM user") 
+query = ("SELECT * FROM custom_110760000100.vw_cartao_associado") 
 
 #executando a busca
 sasi_cursor.execute(query)
@@ -56,7 +56,8 @@ COLUNAS = [
     'generatedAt',
     'nome_cadastrador',
     'telefone_cadastrador',
-    'email_cadastrador'
+    'email_cadastrador',
+    'calha'
 ]
 
 df_dados_da_base = pd.DataFrame(columns=COLUNAS)
@@ -80,7 +81,7 @@ df_dados_da_base['cpf'] = df_dados_da_base['cpf'].str.replace('.','')
 df_dados_da_base['cpf'] = df_dados_da_base['cpf'].str.replace(' ','')
 
 #salvar em excel ordenando por id
-df_dados_da_base.sort_values(by=['id']).to_excel('/home/thiago/Documentos/notebooks/planilha_geral/dados_cartao_total.xlsx',index=False)
+df_dados_da_base.sort_values(by=['id_sasi']).to_excel('/home/thiago/Documentos/notebooks/planilha_geral/dados_cartao_total.xlsx',index=False)
 
 #fechando a conexão
 sasi_cursor.close()
