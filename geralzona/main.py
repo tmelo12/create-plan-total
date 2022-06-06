@@ -2,6 +2,7 @@ import mysql.connector
 import pandas as pd
 import json
 from datetime import datetime
+from calha import nomeCalha
 
 #lendo as configurações de conexão do arquivo json
 with open('/home/thiago/Documentos/notebooks/create-plan-total/geralzona/config.json') as config_file:
@@ -23,19 +24,50 @@ sasi_cursor.execute(query)
 
 #criando dataframe para receber os dados do banco
 COLUNAS = [
-    'id',
-    'nome',
-    'cpf',
+    'id_sasi',
     'municipio',
-    'cod_cartao',
-    'status_cartao',
-    'data_entrega'
+    'card',
+    'status_valecard',
+    'cpf',
+    'rg',
+    'nome',
+    'data_de_nascimento',
+    'cd_cartao',
+    'renda_mensal',
+    'qual_situacao',
+    'numero',
+    'tipo_endereco',
+    'servido_publico',
+    'trabalhador_informal',
+    'classificacao_moradia',
+    'confirmar_anexo_cartao',
+    'count_anexos',
+    'foto_rg0',
+    'foto_rg1',
+    'foto_rg2',
+    'foto_rg3',
+    'foto_cd_cartao0',
+    'foto_cd_cartao1',
+    'foto_cd_cartao2',
+    'foto_cd_cartao3',
+    'rg_cpf_anexo',
+    'rg_cpf_anexo1',
+    'rg_cpf_anexo2',
+    'generatedAt',
+    'nome_cadastrador',
+    'telefone_cadastrador',
+    'email_cadastrador'
 ]
 
 df_dados_da_base = pd.DataFrame(columns=COLUNAS)
 
 #inserindo linhas vindas da base no dataframe
 for (linha) in sasi_cursor:
+    #criando a coluna com nome da calha
+    lista=list(linha)
+    lista.append(nomeCalha(linha[1]))
+    linha=tuple(lista)
+    
     #crio um dataframe de uma linha só, pois o mysql retorna uma tupla e pra concatenar preciso de 2 df
     novaLinha = pd.DataFrame([linha], columns = COLUNAS)
     
