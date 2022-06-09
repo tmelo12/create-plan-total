@@ -221,9 +221,9 @@ while(1):
     df_diario = pd.concat([df_diario, novos_registros])
 
     #removendo pontos e tracos do campo cpf
-    df_diario['cpf'] = df_diario['cpf'].astype(str).str.replace('-','')
-    df_diario['cpf'] = df_diario['cpf'].astype(str).str.replace('.','')
-    df_diario['cpf'] = df_diario['cpf'].astype(str).str.replace(' ','')
+    df_diario['cpf'] = df_diario['cpf'].astype(str).str.replace('-','', regex=True)
+    df_diario['cpf'] = df_diario['cpf'].astype(str).str.replace('.','', regex=True)
+    df_diario['cpf'] = df_diario['cpf'].astype(str).str.replace(' ','', regex=True)
     
     
     time.sleep(5)
@@ -246,9 +246,9 @@ while(1):
             arquivo_diario_salvo = True
     
     #removendo pontos e tracos do campo cpf
-    df_atual['cpf'] = df_atual['cpf'].astype(str).str.replace('-','')
-    df_atual['cpf'] = df_atual['cpf'].astype(str).str.replace('.','')
-    df_atual['cpf'] = df_atual['cpf'].astype(str).str.replace(' ','')
+    df_atual['cpf'] = df_atual['cpf'].astype(str).str.replace('-','', regex=True)
+    df_atual['cpf'] = df_atual['cpf'].astype(str).str.replace('.','', regex=True)
+    df_atual['cpf'] = df_atual['cpf'].astype(str).str.replace(' ','', regex=True)
     
     time.sleep(5)
     #salvar a planilha geralzona com os dados concatenados
